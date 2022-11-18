@@ -30,13 +30,16 @@ transform_to_curl_space <- function(x, y, frequency = 1, octaves = 10) {
 }
 
 
-define_worley_cells <- function(x, y, frequency = 3, octaves = 6) {
+define_worley_cells <- function(x, y) {
   fracture(
     noise = gen_worley,
     fractal = billow,
-    octaves = octaves,
-    frequency = frequency,
-    value = "cell",
+    octaves = 6,
+    freq_init = .1,
+    frequency = ~.*2,
+    gain_init = 3,
+    gain = ~./2,
+    value = "distance",
     x = x,
     y = y
   ) |>
@@ -45,12 +48,15 @@ define_worley_cells <- function(x, y, frequency = 3, octaves = 6) {
 }
 
 
-simplex_noise <- function(x, y, frequency = .1, octaves = 10) {
+simplex_noise <- function(x, y) {
   fracture(
     noise = gen_simplex,
-    fractal = ridged,
-    octaves = octaves,
-    frequency = frequency,
+    fractal = billow,
+    octaves = 10,
+    freq_init = .1,
+    frequency = ~.*2,
+    gain_init = 1,
+    gain = ~.*.6,
     x = x,
     y = y
   ) |>
@@ -92,7 +98,7 @@ alien_floe <- function(seed) {
         sunaltitude = 30,
         sunangle = 90,
         multicore = TRUE,
-        zscale = .005
+        zscale = .002
       ),
       max_darken = .05
     ) |>
@@ -101,7 +107,7 @@ alien_floe <- function(seed) {
 
 generate <- function(seed) {
 
-  fname <- paste0("alien-floe_01_", seed, ".png")
+  fname <- paste0("alien-floe_02_", seed, ".png")
   cat("generating", fname, "\n")
   agg_png(filename = here("output", fname), width = 2000, height = 2000)
   alien_floe(seed)
@@ -109,4 +115,4 @@ generate <- function(seed) {
 
 }
 
-for(seed in 1010:1049) generate(seed)
+for(seed in 1100:1124) generate(seed)
