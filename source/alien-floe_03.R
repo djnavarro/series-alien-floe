@@ -17,13 +17,16 @@ sample_canva2 <- function(seed = NULL, n = 4) {
     (\(x) colorRampPalette(x)(n))()
 }
 
-transform_to_curl_space <- function(x, y, frequency = 1, octaves = 10) {
+transform_to_curl_space <- function(x, y) {
   curl_noise(
     generator = fracture,
     noise = gen_simplex,
     fractal = fbm,
-    octaves = octaves,
-    frequency = frequency,
+    octaves = 10,
+    frequency = ~ . * 1.2,
+    freq_init = .5,
+    gain_init = 1,
+    gain = ~ . * .9,
     x = x,
     y = y
   )
@@ -36,9 +39,9 @@ define_worley_cells <- function(x, y) {
     fractal = billow,
     octaves = 6,
     freq_init = .1,
-    frequency = ~.*2,
+    frequency = ~ . * 2,
     gain_init = 3,
-    gain = ~./2,
+    gain = ~ . * .4,
     value = "distance",
     x = x,
     y = y
@@ -54,9 +57,9 @@ simplex_noise <- function(x, y) {
     fractal = billow,
     octaves = 10,
     freq_init = .1,
-    frequency = ~.*2,
+    frequency = ~ . * 2,
     gain_init = 1,
-    gain = ~.*.6,
+    gain = ~ . * .8,
     x = x,
     y = y
   ) |>
@@ -95,19 +98,19 @@ alien_floe <- function(seed) {
     add_shadow(
       shadowmap = ray_shade(
         heightmap = art,
-        sunaltitude = 30,
+        sunaltitude = 50,
         sunangle = 90,
         multicore = TRUE,
         zscale = .002
       ),
-      max_darken = .05
+      max_darken = .2
     ) |>
     plot_map()
 }
 
 generate <- function(seed) {
 
-  fname <- paste0("alien-floe_02_", seed, ".png")
+  fname <- paste0("alien-floe_03_", seed, ".png")
   cat("generating", fname, "\n")
   agg_png(filename = here("output", fname), width = 2000, height = 2000)
   alien_floe(seed)
@@ -115,4 +118,4 @@ generate <- function(seed) {
 
 }
 
-for(seed in 1125:1149) generate(seed)
+for(seed in 1200:1249) generate(seed)
